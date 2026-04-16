@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aditya — Backend Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f1ea;
+    --bg-alt: #ebe6db;
+    --ink: #1a1a1a;
+    --ink-soft: #3a3a3a;
+    --muted: #6b6660;
+    --accent: #c2410c;
+    --accent-soft: #e8d5c4;
+    --line: #d6cfc2;
+    --display: "Fraunces", Georgia, serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Grain texture overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2.5rem;
+  }
+
+  /* ——— NAV ——— */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(244, 241, 234, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.1rem 2.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .nav-logo {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::before {
+    content: "↳ ";
+    opacity: 0;
+    transition: opacity 0.2s;
+    color: var(--accent);
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a:hover::before { opacity: 1; }
+
+  /* ——— HERO ——— */
+  .hero {
+    padding: 7rem 0 6rem;
+    position: relative;
+  }
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 2rem;
+  }
+  .hero-meta .dot {
+    width: 8px; height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2); }
+    50% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0.05); }
+  }
+  .hero h1 {
+    font-family: var(--display);
+    font-size: clamp(3.2rem, 9vw, 7rem);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin-bottom: 1.8rem;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 300;
+  }
+  .hero-desc {
+    font-family: var(--display);
+    font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+    font-weight: 300;
+    color: var(--ink-soft);
+    max-width: 620px;
+    line-height: 1.5;
+    margin-bottom: 2.5rem;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.4rem;
+    font-family: var(--mono);
+    font-size: 13px;
+    text-decoration: none;
+    border: 1px solid var(--ink);
+    transition: all 0.25s ease;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .btn:hover {
+    background: var(--ink);
+    color: var(--bg);
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--accent);
+  }
+  .btn.primary {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .btn.primary:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  /* Decorative corner marks */
+  .hero::after {
+    content: "—— BACKEND · APIs · SYSTEMS ——";
+    position: absolute;
+    top: 4rem;
+    right: 2.5rem;
+    writing-mode: vertical-rl;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--muted);
+    opacity: 0.6;
+  }
+
+  /* ——— SECTIONS ——— */
+  section { padding: 5rem 0; border-top: 1px solid var(--line); }
+  .section-head {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+    align-items: baseline;
+  }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .section-title {
+    font-family: var(--display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .section-title em { font-style: italic; color: var(--accent); }
+
+  /* ——— EXPERIENCE ——— */
+  .experience {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 3rem;
+    padding: 2rem 0;
+    border-bottom: 1px dashed var(--line);
+    transition: background 0.3s;
+  }
+  .experience:last-child { border-bottom: none; }
+  .experience:hover {
+    background: linear-gradient(90deg, transparent, var(--bg-alt) 30%, transparent);
+  }
+  .exp-date {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .exp-role {
+    font-family: var(--display);
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 0.3rem;
+    letter-spacing: -0.02em;
+  }
+  .exp-company {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .exp-list {
+    list-style: none;
+    padding: 0;
+  }
+  .exp-list li {
+    padding-left: 1.5rem;
+    position: relative;
+    margin-bottom: 0.7rem;
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+  .exp-list li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  /* ——— SKILLS ——— */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+  .skill-card {
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    padding: 1.5rem;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-card:hover {
+    border-color: var(--ink);
+    transform: translateY(-3px);
+  }
+  .skill-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: width 0.3s ease;
+  }
+  .skill-card:hover::before { width: 100%; }
+  .skill-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+  }
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 0.25rem 0.6rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    transition: all 0.2s;
+  }
+  .tag:hover {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+
+  /* ——— CERTS & EDU ——— */
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+  .card-block h3 {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+  .edu-item {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px dashed var(--line);
+  }
+  .edu-item:last-child { border-bottom: none; }
+  .edu-degree {
+    font-family: var(--display);
+    font-size: 1.05rem;
+    font-style: italic;
+    margin-bottom: 0.3rem;
+  }
+  .edu-school {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+  .cert-list {
+    list-style: none;
+  }
+  .cert-list li {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed var(--line);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .cert-list li:last-child { border-bottom: none; }
+  .cert-list li::before {
+    content: "✦";
+    color: var(--accent);
+  }
+
+  /* ——— CONTACT ——— */
+  .contact {
+    padding: 7rem 0;
+    text-align: center;
+    border-top: 1px solid var(--line);
+    background: var(--bg-alt);
+    position: relative;
+  }
+  .contact h2 {
+    font-family: var(--display);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+  }
+  .contact h2 em { font-style: italic; color: var(--accent); }
+  .contact p {
+    font-family: var(--display);
+    font-size: 1.15rem;
+    color: var(--ink-soft);
+    max-width: 500px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.5;
+  }
+  .contact-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ——— FOOTER ——— */
+  footer {
+    padding: 2rem 0;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  /* Entry animation */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero > * {
+    animation: fadeUp 0.8s ease-out backwards;
+  }
+  .hero-meta { animation-delay: 0.1s; }
+  .hero h1 { animation-delay: 0.2s; }
+  .hero-desc { animation-delay: 0.4s; }
+  .hero-cta { animation-delay: 0.55s; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .container { padding: 0 1.5rem; }
+    .nav-inner { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.2rem; }
+    .hero { padding: 4rem 0 3rem; }
+    .section-head,
+    .experience { grid-template-columns: 1fr; gap: 1rem; }
+    .split { grid-template-columns: 1fr; gap: 3rem; }
+    .hero::after { display: none; }
+    section { padding: 3.5rem 0; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">Aditya<span>.</span></div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="hero-meta">
+      <span class="dot"></span>
+      <span>Available for work</span>
+    </div>
+    <h1>Backend developer<br/>building <em>quiet,</em><br/>reliable systems.</h1>
+    <p class="hero-desc">
+      I design and ship scalable APIs, data pipelines, and internal tooling — mostly in Python. Currently focused on FastAPI, MongoDB, and LLM-powered services.
+    </p>
+  </div>
+</header>
+
+<!-- EXPERIENCE -->
+<section id="work">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">01 / Experience</div>
+      <h2 class="section-title">Where I've <em>built things</em></h2>
+    </div>
+
+    <div class="experience">
+      <div class="exp-date">Jan 2026 — Apr 2026</div>
+      <div>
+        <h3 class="exp-role">Software Developer, Internal Systems</h3>
+        <div class="exp-company">AV Canada</div>
+        <ul class="exp-list">
+          <li>Designed scalable backend services with FastAPI, building RESTful APIs for real-time scheduling and operational workflows.</li>
+          <li>Built and managed MongoDB persistence (Motor, PyMongo) handling thousands of operational records with real-time updates.</li>
+          <li>Integrated Redis caching on hot API paths, improving response times by ~20–25%.</li>
+          <li>Shipped responsive internal dashboards with React, Vite, and Axios to visualize live job schedules and statuses.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="experience">
+      <div class="exp-date">Oct 2025 — Feb 2026</div>
+      <div>
+        <h3 class="exp-role">Backend Developer <span style="font-size: 0.75em; color: var(--muted); font-style: italic;">(Volunteer)</span></h3>
+        <div class="exp-company">AI Empower · AI4Health</div>
+        <ul class="exp-list">
+          <li>Contributing to an AI project delivering fast, structured health insights to users.</li>
+          <li>Building backend API integrations, automation workflows, and data formatting pipelines for LLM responses.</li>
+          <li>Supporting production services — debugging with logs and CLI tools in Linux environments.</li>
+          <li>Collaborating with frontend and product in Agile iterations.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="experience">
+      <div class="exp-date">May 2022 — Jul 2023</div>
+      <div>
+        <h3 class="exp-role">Backend Developer</h3>
+        <div class="exp-company">CO-Tech</div>
+        <ul class="exp-list">
+          <li>Developed and maintained RESTful microservices with Python (FastAPI/Flask), deployed on AWS EC2 with Docker.</li>
+          <li>Implemented JWT-based auth and role-based access control for multi-tenant applications.</li>
+          <li>Collaborated on MySQL and MongoDB schema design, optimizing queries for high-throughput environments.</li>
+          <li>Wrote unit and integration tests with Pytest, reducing production bugs across deployments.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">02 / Toolkit</div>
+      <h2 class="section-title">The <em>stack</em> I reach for</h2>
+    </div>
+
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-label">Languages</div>
+        <div class="skill-tags">
+          <span class="tag">Python</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">SQL</span>
+          <span class="tag">MongoDB</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-label">Frameworks</div>
+        <div class="skill-tags">
+          <span class="tag">FastAPI</span>
+          <span class="tag">Flask</span>
+          <span class="tag">Django</span>
+          <span class="tag">Express.js</span>
+          <span class="tag">React</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-label">AI / ML</div>
+        <div class="skill-tags">
+          <span class="tag">OpenAI</span>
+          <span class="tag">Claude</span>
+          <span class="tag">Gemini</span>
+          <span class="tag">DeepSeek</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-label">Databases</div>
+        <div class="skill-tags">
+          <span class="tag">MySQL</span>
+          <span class="tag">MongoDB</span>
+          <span class="tag">Redis</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-label">Cloud & DevOps</div>
+        <div class="skill-tags">
+          <span class="tag">AWS EC2</span>
+          <span class="tag">AWS S3</span>
+          <span class="tag">Docker</span>
+          <span class="tag">Git</span>
+          <span class="tag">CI/CD</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-label">Tools</div>
+        <div class="skill-tags">
+          <span class="tag">Claude Code</span>
+          <span class="tag">Antigravity</span>
+          <span class="tag">VS Code</span>
+          <span class="tag">n8n</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT / EDU / CERTS -->
+<section id="about">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">03 / Background</div>
+      <h2 class="section-title">Studied, <em>certified,</em> still learning</h2>
+    </div>
+
+    <div class="split">
+      <div class="card-block">
+        <h3>Education</h3>
+        <div class="edu-item">
+          <div class="edu-degree">Post Graduate Diploma — Full Stack Software Development</div>
+          <div class="edu-school"><span>Lambton College, ON</span><span>2023 — 2025</span></div>
+        </div>
+        <div class="edu-item">
+          <div class="edu-degree">Bachelor of Computer Applications (BCA)</div>
+          <div class="edu-school"><span>India</span><span>2019 — 2022</span></div>
+        </div>
+      </div>
+
+      <div class="card-block">
+        <h3>Certifications</h3>
+        <ul class="cert-list">
+          <li>IBM — Introduction to Agentic AI</li>
+          <li>Google — AI Essentials & Prompting Essentials</li>
+          <li>VMM India — Python + Machine Learning</li>
+          <li>Docker — Fundamentals</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="container">
+    <h2>Let's build <em>something</em>.</h2>
+    <p>Open to backend and AI-focused engineering roles. Reply times are short.</p>
+    <div class="contact-links">
+      <a href="mailto:Adicanada.1088@gmail.com" class="btn primary">✉ Adicanada.1088@gmail.com</a>
+      <a href="tel:+12893940124" class="btn">+1 (289) 394-0124</a>
+      <a href="https://www.linkedin.com/in/aditya-5b59082a9/" target="_blank" class="btn">LinkedIn ↗</a>
+      <a href="https://github.com/Aditya-Aditya29" target="_blank" class="btn">GitHub ↗</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-inner">
+    <span>© 2026 Aditya</span>
+    <!-- <span>Brampton · Ontario · CA</span> -->
+    <span>Built with care</span>
+  </div>
+</footer>
+
+</body>
+</html>
